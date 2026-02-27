@@ -5,16 +5,51 @@
             <div class="flex">
                 <!-- Logo -->
                 <div class="shrink-0 flex items-center">
-                    <a href="{{ route('dashboard') }}">
+                    <a href="{{ Auth::user()->role === 'merchant' 
+                        ? route('merchant.dashboard') 
+                        : route('customer.dashboard') }}">
                         <x-application-logo class="block h-9 w-auto fill-current text-gray-800" />
                     </a>
                 </div>
 
                 <!-- Navigation Links -->
                 <div class="hidden space-x-8 sm:-my-px sm:ml-10 sm:flex">
-                    <x-nav-link :href="route('merchant.dashboard')" :active="request()->routeIs('merchant.dashboard')">
-                        {{ __('Dashboard Merchant') }}
+
+                    @if(Auth::user()->role === 'merchant')
+                    <x-nav-link :href="route('merchant.dashboard')"
+                        :active="request()->routeIs('merchant.dashboard')">
+                        Dashboard Merchant
                     </x-nav-link>
+
+                    <x-nav-link :href="route('merchant.menus.index')"
+                        :active="request()->routeIs('merchant.menus.*')">
+                        Kelola Menu
+                    </x-nav-link>
+
+                    <x-nav-link :href="route('merchant.orders.index')"
+                        :active="request()->routeIs('merchant.orders.*')">
+                        Order Masuk
+                    </x-nav-link>
+                    @endif
+
+
+                    @if(Auth::user()->role === 'customer')
+                    <x-nav-link :href="route('customer.dashboard')"
+                        :active="request()->routeIs('customer.dashboard')">
+                        Dashboard Customer
+                    </x-nav-link>
+
+                    <x-nav-link :href="route('customer.merchants.index')"
+                        :active="request()->routeIs('customer.merchants.*')">
+                        Cari Katering
+                    </x-nav-link>
+
+                    <x-nav-link :href="route('customer.orders.index')"
+                        :active="request()->routeIs('customer.orders.*')">
+                        Order Saya
+                    </x-nav-link>
+                    @endif
+
                 </div>
             </div>
 
@@ -34,22 +69,37 @@
                     </x-slot>
 
                     <x-slot name="content">
-                        @if(Auth::user()->merchant)
+
+                        @if(Auth::user()->role === 'merchant')
                         <x-dropdown-link :href="route('merchant.dashboard')">
-                            {{ __('Dashboard Merchant') }}
+                            Dashboard Merchant
+                        </x-dropdown-link>
+
+                        <x-dropdown-link :href="route('merchant.profile.show')">
+                            Profile Merchant
                         </x-dropdown-link>
                         @endif
 
-                        <!-- Authentication -->
+                        @if(Auth::user()->role === 'customer')
+                        <x-dropdown-link :href="route('customer.dashboard')">
+                            Dashboard Customer
+                        </x-dropdown-link>
+
+                        <x-dropdown-link :href="route('customer.profile.show')">
+                            Profile Saya
+                        </x-dropdown-link>
+                        @endif
+
                         <form method="POST" action="{{ route('logout') }}">
                             @csrf
 
                             <x-dropdown-link :href="route('logout')"
                                 onclick="event.preventDefault();
-                                                this.closest('form').submit();">
-                                {{ __('Log Out') }}
+                    this.closest('form').submit();">
+                                Log Out
                             </x-dropdown-link>
                         </form>
+
                     </x-slot>
                 </x-dropdown>
             </div>
@@ -68,35 +118,87 @@
 
     <!-- Responsive Navigation Menu -->
     <div :class="{'block': open, 'hidden': ! open}" class="hidden sm:hidden">
+
+        <!-- Role Based Menu -->
         <div class="pt-2 pb-3 space-y-1">
-            <x-responsive-nav-link :href="route('dashboard')" :active="request()->routeIs('dashboard')">
-                {{ __('Dashboard') }}
+
+            @auth
+            {{-- MERCHANT --}}
+            @if(Auth::user()->role === 'merchant')
+
+            <x-responsive-nav-link
+                :href="route('merchant.dashboard')"
+                :active="request()->routeIs('merchant.dashboard')">
+                Dashboard
             </x-responsive-nav-link>
+
+            <x-responsive-nav-link
+                :href="route('merchant.menus.index')"
+                :active="request()->routeIs('merchant.menus.*')">
+                Menu
+            </x-responsive-nav-link>
+
+            <x-responsive-nav-link
+                :href="route('merchant.orders.index')"
+                :active="request()->routeIs('merchant.orders.*')">
+                Order
+            </x-responsive-nav-link>
+
+            <x-responsive-nav-link
+                :href="route('merchant.profile.show')"
+                :active="request()->routeIs('merchant.profile.*')">
+                Profile
+            </x-responsive-nav-link>
+
+            {{-- CUSTOMER --}}
+            @elseif(Auth::user()->role === 'customer')
+
+            <x-responsive-nav-link
+                :href="route('customer.dashboard')"
+                :active="request()->routeIs('customer.dashboard')">
+                Dashboard
+            </x-responsive-nav-link>
+
+            <x-responsive-nav-link
+                :href="route('customer.merchants.index')"
+                :active="request()->routeIs('customer.merchants.*')">
+                Cari Katering
+            </x-responsive-nav-link>
+
+            <x-responsive-nav-link
+                :href="route('customer.orders.index')"
+                :active="request()->routeIs('customer.orders.*')">
+                Pesanan Saya
+            </x-responsive-nav-link>
+
+            @endif
+            @endauth
+
         </div>
 
-        <!-- Responsive Settings Options -->
+        <!-- User Info & Logout -->
         <div class="pt-4 pb-1 border-t border-gray-200">
             <div class="px-4">
-                <div class="font-medium text-base text-gray-800">{{ Auth::user()->name }}</div>
-                <div class="font-medium text-sm text-gray-500">{{ Auth::user()->email }}</div>
+                <div class="font-medium text-base text-gray-800">
+                    {{ Auth::user()->name }}
+                </div>
+                <div class="font-medium text-sm text-gray-500">
+                    {{ Auth::user()->email }}
+                </div>
             </div>
 
             <div class="mt-3 space-y-1">
-                <x-responsive-nav-link :href="route('merchant.dashboard')">
-                    {{ __('Dashboard Merchant') }}
-                </x-responsive-nav-link>
-
-                <!-- Authentication -->
                 <form method="POST" action="{{ route('logout') }}">
                     @csrf
 
-                    <x-responsive-nav-link :href="route('logout')"
-                        onclick="event.preventDefault();
-                                        this.closest('form').submit();">
-                        {{ __('Log Out') }}
+                    <x-responsive-nav-link
+                        :href="route('logout')"
+                        onclick="event.preventDefault(); this.closest('form').submit();">
+                        Logout
                     </x-responsive-nav-link>
                 </form>
             </div>
         </div>
+
     </div>
 </nav>

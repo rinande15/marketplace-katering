@@ -9,27 +9,45 @@ use App\Models\Menu;
 
 class OrderController extends Controller
 {
-    public function store(Request $request, $menuId)
+    public function store(Request $request, Menu $menu)
     {
         $request->validate([
             'quantity' => 'required|integer|min:1',
-            'delivery_date' => 'required|date|after_or_equal:today'
+            'delivery_date' => 'required|date'
         ]);
-
-        $menu = Menu::findOrFail($menuId);
 
         $total = $menu->price * $request->quantity;
 
-        Order::create([
-            'menu_id' => $menu->id,
-            'merchant_id' => $menu->merchant_id,
+        $order = Order::create([
             'customer_id' => auth()->id(),
+            'merchant_id' => $menu->merchant_id,
+            'menu_id' => $menu->id,
             'quantity' => $request->quantity,
             'delivery_date' => $request->delivery_date,
             'total_price' => $total,
-            'invoice_number' => 'INV-' . date('Ymd') . '-' . rand(1000, 9999),
+            'invoice_number' => 'INV-' . strtoupper(uniqid()),
+            'status' => 'pending'
         ]);
 
-        return redirect()->back()->with('success', 'Pesanan berhasil dibuat.');
+        return redirect()->route('customer.orders.show', $order->id);
+    }
+
+    public function index()
+    {
+        $orders = Order::with('menu', 'merchant')
+            ->where('customer_id', auth()->id())
+            ->latest()
+            ->paginate(10);
+
+        return view('customer.orders.index', compact('orders'));
+    }
+
+    public function show($id)
+    {
+        $order = Order::with('menu', 'merchant')
+            ->where('customer_id', auth()->id())
+            ->findOrFail($id);
+
+        return view('customer.orders.show', compact('order'));
     }
 }

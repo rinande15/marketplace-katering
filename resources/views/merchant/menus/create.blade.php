@@ -24,10 +24,11 @@
 
         <div class="mb-3">
             <label>Foto</label>
-            <input type="file" name="photo" class="form-control">
+            <input type="file" name="photo" class="form-control" required>
         </div>
 
         <button class="btn btn-success">Simpan</button>
+        <a href="{{ route('merchant.dashboard') }}" class="btn btn-secondary">Kembali</a>
     </form>
 </div>
 @endsection

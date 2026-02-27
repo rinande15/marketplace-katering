@@ -45,6 +45,6 @@ class User extends Authenticatable
 
     public function merchant()
     {
-        return $this->hasOne(\App\Models\Merchant::class);
+        return $this->hasOne(Merchant::class);
     }
 }

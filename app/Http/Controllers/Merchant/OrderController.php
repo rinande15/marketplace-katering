@@ -22,21 +22,11 @@ class OrderController extends Controller
 
     public function show($id)
     {
-        $order = Order::with('menu', 'merchant', 'customer')
-            ->where('merchant_id', auth()->user()->merchant->id)
+        $merchant = auth()->user()->merchant;
+
+        $order = Order::where('merchant_id', $merchant->id)
+            ->with(['customer', 'menu'])
             ->findOrFail($id);
-
-        $total = $menu->price * $request->quantity;
-
-        Order::create([
-            'menu_id' => $menu->id,
-            'merchant_id' => $menu->merchant_id,
-            'customer_id' => auth()->id(),
-            'quantity' => $request->quantity,
-            'delivery_date' => $request->delivery_date,
-            'total_price' => $total,
-            'invoice_number' => 'INV-' . date('Ymd') . '-' . rand(1000, 9999),
-        ]);
 
         return view('merchant.orders.show', compact('order'));
     }

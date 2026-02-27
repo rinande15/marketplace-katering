@@ -13,4 +13,17 @@ class Menu extends Model
     {
         return $this->belongsTo(Merchant::class);
     }
+
+    protected $fillable = [
+        'merchant_id',
+        'name',
+        'description',
+        'price',
+        'photo',
+    ];
+
+    public function orders()
+    {
+        return $this->hasMany(\App\Models\Order::class);
+    }
 }

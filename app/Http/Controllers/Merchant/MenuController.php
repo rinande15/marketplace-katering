@@ -28,7 +28,7 @@ class MenuController extends Controller
             'name' => 'required|max:255',
             'description' => 'required',
             'price' => 'required|numeric|min:0',
-            'photo' => 'nullable|image|mimes:jpg,jpeg,png|max:2048'
+            'photo' => 'required|image|mimes:jpg,jpeg,png|max:2048'
         ]);
 
         $merchant = auth()->user()->merchant;

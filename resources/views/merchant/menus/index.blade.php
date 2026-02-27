@@ -19,6 +19,7 @@
             <tr>
                 <th>Foto</th>
                 <th>Nama</th>
+                <th>Deskripsi</th>
                 <th>Harga</th>
                 <th>Aksi</th>
             </tr>
@@ -32,6 +33,7 @@
                     @endif
                 </td>
                 <td>{{ $menu->name }}</td>
+                <td>{{ $menu->description }}</td>
                 <td>Rp {{ number_format($menu->price) }}</td>
                 <td>
                     <a href="{{ route('merchant.menus.edit', $menu->id) }}" class="btn btn-warning btn-sm">Edit</a>
@@ -50,5 +52,7 @@
     </table>
 
     {{ $menus->links() }}
+
+    <a href="{{ route('merchant.dashboard') }}" class="btn btn-secondary">Kembali</a>
 </div>
 @endsection

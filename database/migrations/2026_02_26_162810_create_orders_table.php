@@ -15,13 +15,14 @@ return new class extends Migration
     {
         Schema::create('orders', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('menu_id')->constrained();
-            $table->foreignId('merchant_id')->constrained();
-            $table->foreignId('customer_id')->constrained('users');
+            $table->foreignId('customer_id')->constrained('users')->cascadeOnDelete();
+            $table->foreignId('merchant_id')->constrained()->cascadeOnDelete();
+            $table->foreignId('menu_id')->constrained()->cascadeOnDelete();
             $table->integer('quantity');
             $table->date('delivery_date');
-            $table->integer('total_price');
-            $table->string('invoice_number');
+            $table->decimal('total_price', 15, 2);
+            $table->string('invoice_number')->unique();
+            $table->enum('status', ['pending', 'confirmed', 'delivered', 'cancelled'])->default('pending');
             $table->timestamps();
         });
     }
