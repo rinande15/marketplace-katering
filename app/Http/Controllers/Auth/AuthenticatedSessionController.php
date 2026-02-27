@@ -29,7 +29,13 @@ class AuthenticatedSessionController extends Controller
 
         $request->session()->regenerate();
 
-        return redirect()->intended(RouteServiceProvider::HOME);
+        // CEK ROLE MERCHANT
+        if (auth()->user()->role === 'merchant') {
+            return redirect()->route('merchant.dashboard');
+        }
+
+        // Kalau bukan merchant
+        return redirect()->route('dashboard');
     }
 
     /**

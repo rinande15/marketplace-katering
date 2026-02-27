@@ -26,8 +26,6 @@ class OrderController extends Controller
             ->where('merchant_id', auth()->user()->merchant->id)
             ->findOrFail($id);
 
-        return view('merchant.orders.show', compact('order'));
-
         $total = $menu->price * $request->quantity;
 
         Order::create([
@@ -39,5 +37,7 @@ class OrderController extends Controller
             'total_price' => $total,
             'invoice_number' => 'INV-' . date('Ymd') . '-' . rand(1000, 9999),
         ]);
+
+        return view('merchant.orders.show', compact('order'));
     }
 }

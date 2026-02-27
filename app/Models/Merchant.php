@@ -15,11 +15,19 @@ class Merchant extends Model
 
     public function menus()
     {
-        return $this->hasMany(Menu::class);
+        return $this->hasMany(\App\Models\Menu::class);
     }
 
     public function orders()
     {
-        return $this->hasMany(Order::class);
+        return $this->hasMany(\App\Models\Order::class);
     }
+
+    protected $fillable = [
+        'user_id',
+        'company_name',
+        'address',
+        'phone',
+        'description',
+    ];
 }
