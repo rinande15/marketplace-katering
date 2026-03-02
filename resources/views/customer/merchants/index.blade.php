@@ -33,8 +33,8 @@
         @foreach($merchants as $merchant)
         <div style="border:1px solid #ddd; padding:15px; border-radius:8px;">
             <h4>{{ $merchant->name }}</h4>
-            <p><strong>Lokasi:</strong> {{ $merchant->address }}</p>
-            <p><strong>Menu:</strong> {{ $merchant->name }}</p>
+            <p><strong>Lokasi:</strong> {{ request('address') }}</p>
+            <p><strong>Menu:</strong> {{ request('name') }}</p>
 
             <a href="{{ route('customer.merchants.show', $merchant->id) }}">
                 Lihat Detail
