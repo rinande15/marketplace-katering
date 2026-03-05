@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Auth;
 use App\Http\Controllers\Controller;
 use App\Models\User;
 use App\Models\Merchant;
+use App\Models\Customer;
 use Illuminate\Auth\Events\Registered;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -39,6 +40,15 @@ class RegisteredUserController extends Controller
             Merchant::create([
                 'user_id' => $user->id,
                 'company_name' => 'Isi Nama Perusahaan',
+                'address' => '-',
+                'phone' => '-',
+                'description' => null,
+            ]);
+        } elseif ($request->role === 'customer') {
+            // 🔥 kalau customer, auto bikin record customer
+            Customer::create([
+                'user_id' => $user->id,
+                'name' => $request->name,
                 'address' => '-',
                 'phone' => '-',
                 'description' => null,

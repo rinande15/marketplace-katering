@@ -12,6 +12,7 @@ use App\Http\Controllers\Customer\DashboardController as CustomerDashboardContro
 use App\Http\Controllers\Customer\MerchantController;
 use App\Http\Controllers\Customer\OrderController as CustomerOrderController;
 use App\Http\Controllers\Customer\MerchantController as CustomerMerchantController;
+use App\Http\Controllers\Customer\ProfileController as CustomerProfileController;
 
 Route::get('/', function () {
     return view('welcome');
@@ -70,6 +71,15 @@ Route::middleware('auth')->group(function () {
             Route::get('/profile', function () {
                 return view('customer.profile.show');
             })->name('profile.show');
+
+            Route::get('/profile/edit', [CustomerProfileController::class, 'edit'])
+                ->name('profile.edit');
+
+            Route::get('/profile', [CustomerProfileController::class, 'show'])
+                ->name('profile.show');
+
+            Route::put('/profile', [CustomerProfileController::class, 'update'])
+                ->name('profile.update');
         });
 });
 

@@ -2,7 +2,7 @@
 
 @section('content')
 <div class="container">
-    <h2>Edit Profile Merchant</h2>
+    <h2>Edit Profile Customer</h2>
 
     @if(session('success'))
     <div class="alert alert-success">
@@ -26,17 +26,17 @@
     </div>
     @endif
 
-    <form action="{{ route('merchant.profile.update') }}" method="POST">
+    <form action="{{ route('customer.profile.update') }}" method="POST">
         @csrf
         @method('PUT')
 
         <div class="mb-3">
-            <label>Nama Perusahaan</label>
+            <label>Nama</label>
             <input type="text"
-                name="nama_perusahaan"
+                name="nama"
                 class="form-control"
                 maxlength="255"
-                value="{{ old('nama_perusahaan', $merchant->nama_perusahaan ?? '') }}"
+                value="{{ old('nama', $customer->nama ?? '') }}"
                 required>
         </div>
 
@@ -45,7 +45,7 @@
             <textarea name="alamat"
                 class="form-control"
                 maxlength="500"
-                required>{{ old('alamat', $merchant->alamat ?? '') }}</textarea>
+                required>{{ old('alamat', $customer->alamat ?? '') }}</textarea>
         </div>
 
         <div class="mb-3">
@@ -54,7 +54,7 @@
                 name="kontak"
                 class="form-control"
                 maxlength="20"
-                value="{{ old('kontak', $merchant->kontak ?? '') }}"
+                value="{{ old('kontak', $customer->kontak ?? '') }}"
                 required>
         </div>
 
@@ -62,13 +62,13 @@
             <label>Deskripsi</label>
             <textarea name="deskripsi"
                 class="form-control"
-                maxlength="1000">{{ old('deskripsi', $merchant->deskripsi ?? '') }}</textarea>
+                maxlength="1000">{{ old('deskripsi', $customer->deskripsi ?? '') }}</textarea>
         </div>
 
         <button type="submit" class="btn btn-primary">
             Update Profile
         </button>
-        <a href="{{ route('merchant.dashboard') }}" class="btn btn-secondary">Kembali</a>
+        <a href="{{ route('customer.dashboard') }}" class="btn btn-secondary">Kembali</a>
     </form>
 </div>
 @endsection

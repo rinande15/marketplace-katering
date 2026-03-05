@@ -9,35 +9,35 @@ class ProfileController extends Controller
 {
     public function edit()
     {
-        $merchant = auth()->user()->merchant;
+        $customer = auth()->user()->customer;
 
-        return view('merchant.profile.edit', compact('merchant'));
+        return view('customer.profile.edit', compact('customer'));
     }
 
     public function update(Request $request)
     {
         $request->validate([
-            'nama_perusahaan' => 'required|string|max:255',
+            'nama' => 'required|string|max:255',
             'alamat' => 'required|string',
             'kontak' => 'required|string|max:20',
             'deskripsi' => 'nullable|string',
         ]);
 
-        $merchant = auth()->user()->merchant;
+        $customer = auth()->user()->customer;
 
-        if (!$merchant) {
-            return redirect()->route('merchant.profile.edit')
-                ->with('error', 'Merchant tidak ditemukan.');
+        if (!$customer) {
+            return redirect()->route('customer.profile.edit')
+                ->with('error', 'Customer tidak ditemukan.');
         }
 
-        $merchant->update([
-            'company_name' => $request->nama_perusahaan,
+        $customer->update([
+            'name' => $request->nama,
             'address' => $request->alamat,
             'phone' => $request->kontak,
             'description' => $request->deskripsi,
         ]);
 
-        return redirect()->route('merchant.dashboard')
+        return redirect()->route('customer.dashboard')
             ->with('success', 'Profile berhasil diupdate.');
     }
 
@@ -46,10 +46,10 @@ class ProfileController extends Controller
         $merchant = auth()->user()->merchant;
 
         if (!$merchant) {
-            return redirect()->route('merchant.profile.edit')
-                ->with('error', 'Lengkapi profil merchant terlebih dahulu.');
+            return redirect()->route('customer.profile.edit')
+                ->with('error', 'Lengkapi profil customer terlebih dahulu.');
         }
 
-        return view('merchant.profile.show', compact('merchant'));
+        return view('customer.profile.show', compact('customer'));
     }
 }

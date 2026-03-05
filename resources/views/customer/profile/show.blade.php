@@ -15,12 +15,12 @@
                 </div>
 
                 <div class="col-md-4 text-md-end mt-3 mt-md-0">
-                    <a href="{{ route('merchant.profile.edit') }}"
+                    <a href="{{ route('customer.profile.edit') }}"
                         class="btn btn-warning">
                         ✏ Edit Profile
                     </a>
 
-                    <a href="{{ route('merchant.dashboard') }}"
+                    <a href="{{ route('customer.dashboard') }}"
                         class="btn btn-secondary">
                         ← Kembali ke Dashboard
                     </a>
