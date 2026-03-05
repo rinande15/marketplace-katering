@@ -2,7 +2,6 @@
 
 namespace App\Http\Controllers\Merchant;
 
-namespace App\Http\Controllers\Merchant;
 
 use App\Http\Controllers\Controller;
 use App\Models\Menu;

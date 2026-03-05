@@ -18,6 +18,19 @@
     <p><strong>Status:</strong> {{ ucfirst($order->status) }}</p>
 
     <br>
+
+    <ul class="timeline">
+
+        <li class="completed">Order dibuat</li>
+
+        <li class="completed">Diproses</li>
+
+        <li class="active">Dikirim</li>
+
+        <li>Selesai</li>
+
+    </ul>
+
     <a href="{{ route('customer.orders.index') }}">Kembali</a>
 </div>
 @endsection

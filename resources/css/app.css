@@ -1,3 +1,18 @@
-@tailwind base;
-@tailwind components;
-@tailwind utilities;
+.timeline {
+    list-style: none;
+    padding: 0;
+}
+
+.timeline li {
+    padding: 10px;
+    border-left: 4px solid gray;
+    margin-bottom: 10px;
+}
+
+.timeline .completed {
+    border-color: green;
+}
+
+.timeline .active {
+    border-color: orange;
+}

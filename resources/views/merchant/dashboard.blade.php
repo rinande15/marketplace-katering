@@ -1,209 +1,272 @@
 @extends('layouts.app')
 
 @section('content')
-<div class="container py-4">
 
-    <h2 class="fw-bold mb-4">Dashboard Merchant</h2>
+<div class="flex h-screen bg-gray-100">
 
-    {{-- Info Merchant --}}
-    <div class="card shadow-sm border-0 mb-4">
-        <div class="card-body">
-            <div class="d-flex justify-content-between align-items-start">
-                <div>
-                    <h4 class="fw-bold mb-1">{{ $merchant->company_name }}</h4>
-                    <p class="text-muted mb-1">
-                        <i class="bi bi-geo-alt"></i> {{ $merchant->address }}
-                    </p>
-                    <p class="text-muted mb-1">
-                        <i class="bi bi-telephone"></i> {{ $merchant->phone }}
-                    </p>
-                    <p class="mt-2">
-                        {{ $merchant->description ?? 'Belum ada deskripsi.' }}
-                    </p>
-                </div>
+    <!-- SIDEBAR -->
+    <aside class="w-64 bg-white shadow-lg flex flex-col">
 
-                <div>
-                    <a href="{{ route('merchant.profile.edit') }}"
-                        class="btn btn-outline-warning btn-sm">
-                        ✏ Edit Profile
-                    </a>
-                </div>
-            </div>
-        </div>
-    </div>
-
-    {{-- Statistik --}}
-    <div class="row mb-4">
-        <div class="col-md-6">
-            <div class="card text-center shadow-sm border-0">
-                <div class="card-body">
-                    <h5 class="text-muted">Total Menu</h5>
-                    <h2 class="fw-bold">{{ $totalMenu }}</h2>
-                </div>
-            </div>
+        <div class="p-6 border-b">
+            <h2 class="text-xl font-bold text-indigo-600">
+                🍱 Katering Admin
+            </h2>
         </div>
 
-        <div class="col-md-4">
-            <div class="card text-center shadow-sm border-0">
-                <div class="card-body">
-                    <h6 class="text-muted">Total Order</h6>
-                    <h2 class="fw-bold">{{ $totalOrder }}</h2>
-                </div>
-            </div>
-        </div>
+        <nav class="flex-1 p-4 space-y-2 text-sm">
 
-        <div class="col-md-4">
-            <div class="card text-center shadow-sm border-0">
-                <div class="card-body">
-                    <h6 class="text-muted">Total Revenue</h6>
-                    <h2 class="fw-bold">
-                        Rp {{ number_format($totalRevenue) }}
-                    </h2>
-                </div>
-            </div>
-        </div>
+            <a href="/merchant/dashboard" class="block px-4 py-2 rounded-lg bg-indigo-100 text-indigo-600">
+                📊 Dashboard
+            </a>
 
-        <div class="col-md-4">
-            <div class="card text-center shadow-sm border-0">
-                <div class="card-body">
-                    <h6 class="text-muted">Pending Order</h6>
-                    <h2 class="fw-bold text-warning">
-                        {{ $pendingCount }}
-                    </h2>
-                </div>
-            </div>
-        </div>
-    </div>
+            <a href="/merchant/menus" class="block px-4 py-2 rounded-lg hover:bg-gray-100">
+                🍱 Menu
+            </a>
 
-    {{-- Pengelolaan Menu --}}
-    <div class="card shadow-sm border-0 mb-4">
-        <div class="card-body">
+            <a href="/merchant/orders" class="block px-4 py-2 rounded-lg hover:bg-gray-100">
+                📦 Orders
+            </a>
 
-            <div class="d-flex justify-content-between align-items-center mb-3">
-                <h4 class="fw-bold mb-0">Menu</h4>
-                <div>
-                    <a href="{{ route('merchant.menus.create') }}"
-                        class="btn btn-primary btn-sm">
-                        + Tambah Menu
-                    </a>
+            <a href="/merchant/transaksi" class="block px-4 py-2 rounded-lg hover:bg-gray-100">
+                💳 Transaksi
+            </a>
 
-                    <a href="{{ route('merchant.menus.index') }}"
-                        class="btn btn-outline-secondary btn-sm">
-                        Lihat Semua
-                    </a>
-                </div>
+            <a href="/merchant/laporan" class="block px-4 py-2 rounded-lg hover:bg-gray-100">
+                📑 Laporan
+            </a>
+
+        </nav>
+
+    </aside>
+
+
+    <!-- CONTENT -->
+    <main class="flex-1 overflow-y-auto p-8">
+
+        <!-- TOPBAR -->
+        <div class="flex justify-between items-center mb-8">
+
+            <div>
+                <h1 class="text-2xl font-bold text-gray-800">
+                    Dashboard Merchant
+                </h1>
+
+                <p class="text-gray-500">
+                    Pantau performa katering kamu
+                </p>
             </div>
 
-            <p class="text-muted">
-                Total Menu: <strong>{{ $totalMenu }}</strong>
-            </p>
+            <div class="flex items-center gap-4">
 
-            <h6 class="fw-bold mt-4 mb-3">🔥 5 Menu Terlaris</h6>
+                <div id="notification" class="hidden bg-green-100 text-green-800 px-4 py-2 rounded-lg">
+                    🔔 Order baru masuk!
+                </div>
 
-            <div class="table-responsive">
-                <table class="table align-middle">
-                    <thead class="table-light">
-                        <tr>
-                            <th>Foto</th>
-                            <th>Nama</th>
-                            <th>Harga</th>
-                            <th>Terjual</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        @forelse($topMenus as $menu)
-                        <tr>
-                            <td>
-                                @if($menu->photo)
-                                <img src="{{ asset('storage/'.$menu->photo) }}"
-                                    width="60"
-                                    class="rounded">
-                                @else
-                                <span class="text-muted">No Image</span>
-                                @endif
-                            </td>
-                            <td class="fw-semibold">{{ $menu->name }}</td>
-                            <td>Rp {{ number_format($menu->price) }}</td>
-                            <td>
-                                <span class="badge bg-success">
-                                    {{ $menu->orders_count }}x
-                                </span>
-                            </td>
-                        </tr>
-                        @empty
-                        <tr>
-                            <td colspan="4" class="text-center text-muted">
-                                Belum ada data penjualan.
-                            </td>
-                        </tr>
-                        @endforelse
-                    </tbody>
-                </table>
+                <img src="https://i.pravatar.cc/40" class="w-8 h-8 rounded-full">
+
             </div>
 
         </div>
-    </div>
 
-    {{-- Daftar Order --}}
-    <div class="card shadow-sm border-0">
-        <div class="card-body">
 
-            <div class="d-flex justify-content-between mb-3">
-                <h4 class="fw-bold">Order Terbaru</h4>
+        <!-- STAT -->
+        <div class="grid md:grid-cols-4 gap-6 mb-10">
 
-                <a href="{{ route('merchant.orders.index') }}"
-                    class="btn btn-outline-primary btn-sm">
-                    Lihat Semua
+            <div class="bg-white p-6 rounded-xl shadow">
+                <p class="text-gray-500 text-sm">Total Order</p>
+                <h2 class="text-3xl font-bold text-indigo-600">
+                    120
+                </h2>
+            </div>
+
+            <div class="bg-white p-6 rounded-xl shadow">
+                <p class="text-gray-500 text-sm">Revenue</p>
+                <h2 class="text-3xl font-bold text-green-600">
+                    Rp 12.500.000
+                </h2>
+            </div>
+
+            <div class="bg-white p-6 rounded-xl shadow">
+                <p class="text-gray-500 text-sm">Menu Aktif</p>
+                <h2 class="text-3xl font-bold">
+                    25
+                </h2>
+            </div>
+
+            <div class="bg-white p-6 rounded-xl shadow">
+                <p class="text-gray-500 text-sm">Rating</p>
+                <h2 class="text-3xl font-bold text-yellow-500">
+                    ⭐ 4.8
+                </h2>
+            </div>
+
+        </div>
+
+
+        <!-- CHART -->
+        <div class="grid md:grid-cols-2 gap-6 mb-10">
+
+            <div class="bg-white p-6 rounded-xl shadow">
+
+                <h3 class="font-semibold mb-4 text-gray-700">
+                    Revenue Mingguan
+                </h3>
+
+                <canvas id="revenueChart"></canvas>
+
+            </div>
+
+
+            <div class="bg-white p-6 rounded-xl shadow">
+
+                <h3 class="font-semibold mb-4 text-gray-700">
+                    Order Statistik
+                </h3>
+
+                <canvas id="orderChart"></canvas>
+
+            </div>
+
+        </div>
+
+
+        <!-- MENU -->
+        <div class="bg-white p-6 rounded-xl shadow mb-10">
+
+            <div class="flex justify-between mb-4">
+
+                <h3 class="font-semibold text-lg">
+                    Menu Management
+                </h3>
+
+                <a href="/merchant/menus/create"
+                    class="bg-indigo-600 text-white px-4 py-2 rounded-lg">
+                    + Tambah Menu
                 </a>
+
             </div>
 
-            <div class="table-responsive">
-                <table class="table align-middle">
-                    <thead class="table-light">
-                        <tr>
-                            <th>ID</th>
-                            <th>Customer</th>
-                            <th>Total</th>
-                            <th>Status</th>
-                            <th width="100">Aksi</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        @forelse($latestOrders as $order)
-                        <tr>
-                            <td>#{{ $order->id }}</td>
-                            <td>{{ $order->customer->name }}</td>
-                            <td>Rp {{ number_format($order->total_price) }}</td>
-                            <td>
-                                <span class="badge 
-                                @if($order->status == 'pending') bg-warning
-                                @elseif($order->status == 'completed') bg-success
-                                @elseif($order->status == 'cancelled') bg-danger
-                                @else bg-secondary
-                                @endif">
-                                    {{ $order->status ?? 'pending' }}
-                                </span>
-                            </td>
-                            <td>
-                                <a href="{{ route('merchant.orders.show', $order->id) }}"
-                                    class="btn btn-sm btn-info">
-                                    Lihat
-                                </a>
-                            </td>
-                        </tr>
-                        @empty
-                        <tr>
-                            <td colspan="5" class="text-center text-muted">
-                                Belum ada order.
-                            </td>
-                        </tr>
-                        @endforelse
-                    </tbody>
-                </table>
-            </div>
+            <table class="w-full text-sm">
+
+                <thead>
+                    <tr class="border-b text-left">
+                        <th class="py-2">Menu</th>
+                        <th>Harga</th>
+                        <th>Stock</th>
+                        <th>Status</th>
+                    </tr>
+                </thead>
+
+                <tbody>
+
+                    <tr class="border-b">
+                        <td class="py-2">Nasi Kotak Ayam</td>
+                        <td>Rp 25.000</td>
+                        <td>50</td>
+                        <td class="text-green-600">Aktif</td>
+                    </tr>
+
+                    <tr class="border-b">
+                        <td class="py-2">Snack Box</td>
+                        <td>Rp 15.000</td>
+                        <td>80</td>
+                        <td class="text-green-600">Aktif</td>
+                    </tr>
+
+                </tbody>
+
+            </table>
 
         </div>
-    </div>
+
+
+        <!-- ORDER -->
+        <div class="bg-white p-6 rounded-xl shadow">
+
+            <h3 class="font-semibold mb-4">
+                Recent Orders
+            </h3>
+
+            <table class="w-full text-sm">
+
+                <thead>
+                    <tr class="border-b">
+                        <th class="py-2">Customer</th>
+                        <th>Menu</th>
+                        <th>Status</th>
+                        <th>Total</th>
+                    </tr>
+                </thead>
+
+                <tbody>
+
+                    <tr class="border-b">
+                        <td>PT Telkom</td>
+                        <td>Nasi Kotak</td>
+                        <td class="text-blue-500">Diproses</td>
+                        <td>Rp 2.500.000</td>
+                    </tr>
+
+                    <tr class="border-b">
+                        <td>Bank BRI</td>
+                        <td>Snack Box</td>
+                        <td class="text-yellow-500">Pending</td>
+                        <td>Rp 800.000</td>
+                    </tr>
+
+                </tbody>
+
+            </table>
+
+        </div>
+
+    </main>
 
 </div>
+
+@endsection
+
+
+@section('scripts')
+
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+<script>
+    new Chart(document.getElementById('revenueChart'), {
+
+        type: 'line',
+
+        data: {
+            labels: ['Sen', 'Sel', 'Rab', 'Kam', 'Jum', 'Sab', 'Min'],
+            datasets: [{
+                label: 'Revenue',
+                data: [2000000, 3000000, 2500000, 4000000, 3500000, 4500000, 3000000],
+                borderColor: '#6366F1',
+                backgroundColor: 'rgba(99,102,241,0.2)',
+                fill: true,
+                tension: 0.4
+            }]
+        }
+
+    })
+
+    new Chart(document.getElementById('orderChart'), {
+
+        type: 'doughnut',
+
+        data: {
+            labels: ['Pending', 'Diproses', 'Dikirim', 'Selesai'],
+            datasets: [{
+                data: [12, 19, 8, 30],
+                backgroundColor: ['#FACC15', '#3B82F6', '#A855F7', '#22C55E']
+            }]
+        }
+
+    })
+
+    setTimeout(() => {
+        document.getElementById('notification').classList.remove('hidden')
+    }, 3000)
+</script>
+
 @endsection

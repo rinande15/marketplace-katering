@@ -35,14 +35,16 @@ class MenuController extends Controller
 
         $photoPath = null;
         if ($request->hasFile('photo')) {
-            $photoPath = $request->file('photo')->store('menus', 'public');
+
+            $photo = $request->file('photo')->store('menus', 'public');
         }
 
-        $merchant->menus()->create([
+        Menu::create([
             'name' => $request->name,
-            'description' => $request->description,
             'price' => $request->price,
-            'photo' => $photoPath
+            'description' => $request->description,
+            'stock' => $request->stock,
+            'photo' => $photo
         ]);
 
         return redirect()->route('merchant.menus.index')
