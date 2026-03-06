@@ -6,6 +6,7 @@ namespace App\Http\Controllers\Merchant;
 use App\Http\Controllers\Controller;
 use App\Models\Menu;
 use App\Models\Order;
+use App\Models\Review;
 
 class DashboardController extends Controller
 {
@@ -46,6 +47,21 @@ class DashboardController extends Controller
             ->take(5)
             ->get();
 
+        $weeklyRevenue = Order::where('merchant_id', auth()->user()->merchant->id)
+            ->selectRaw('DATE(created_at) as date, SUM(total_price) as total')
+            ->groupBy('date')
+            ->orderBy('date', 'ASC')
+            ->take(7)
+            ->get();
+
+        $rating = Review::avg('rating');
+
+        $orderStats = [
+            'pending' => Order::where('status', 'pending')->count(),
+            'diproses' => Order::where('status', 'diproses')->count(),
+            'selesai' => Order::where('status', 'selesai')->count(),
+        ];
+
         return view('merchant.dashboard', compact(
             'merchant',
             'totalMenu',
@@ -53,7 +69,10 @@ class DashboardController extends Controller
             'totalOrder',
             'totalRevenue',
             'pendingCount',
-            'latestOrders'
+            'rating',
+            'weeklyRevenue',
+            'latestOrders',
+            'orderStats'
         ));
     }
 }

@@ -14,15 +14,11 @@ return new class extends Migration
     public function up()
     {
         Schema::create('reviews', function (Blueprint $table) {
-
             $table->id();
-
-            $table->foreignId('order_id')->constrained();
-
+            $table->foreignId('user_id')->constrained();
+            $table->foreignId('menu_id')->constrained();
             $table->integer('rating');
-
             $table->text('comment')->nullable();
-
             $table->timestamps();
         });
     }
